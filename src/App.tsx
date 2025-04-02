@@ -6,6 +6,7 @@ import Servicos from './pages/Servicos/servicos';
 import Login from './pages/Login/Login';
 import Funcionarios from './pages/Funcionarios/Funcionarios';
 import Relatorio from './pages/Relatorio/relatorio';
+import Agenda from './pages/Agenda/Agenda';
 
 // Componente para proteger rotas
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
@@ -34,6 +35,7 @@ function App() {
                 {/* Conteúdo principal */}
                 <div className="col-12 col-md-9 col-xl-10 p-3 overflow-auto">
                   <Routes>
+                    <Route path='/agenda' element={<Agenda />} />
                     <Route path="/servicos" element={<Servicos />} />
                     <Route path="/funcionarios" element={<Funcionarios />} />
                     <Route path='/relatorio' element={<Relatorio />} />

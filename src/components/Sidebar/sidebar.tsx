@@ -41,9 +41,9 @@ function Sidebar() {
             </Link>
             <ul className="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start w-100" id="menu">
               <li className="nav-item w-100">
-                <Link to="/home" className="nav-link px-sm-0 px-3 text-light">
+                {/* <Link to="/home" className="nav-link px-sm-0 px-3 text-light">
                   <i className="fs-5 bi-house"></i><span className="ms-1 d-none d-sm-inline"> Home</span>
-                </Link>
+                </Link> */}
               </li>
               <li className="nav-item w-100">
                 <Link to="/relatorio" className="nav-link px-sm-0 px-2 text-light">
@@ -67,14 +67,29 @@ function Sidebar() {
               </li>
             </ul>
             <div className="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
-              <a href="#" className="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" className="rounded-circle" />
+              <button
+                className="d-flex align-items-center text-white text-decoration-none dropdown-toggle bg-transparent border-0"
+                id="dropdownUser1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-person"></i>
                 <span className="d-none d-sm-inline mx-1">{usuario?.nome || 'Usuário'}</span>
-              </a>
+              </button>
               <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                <li><a className="dropdown-item" href="#" onClick={handleOpenPerfilModal}>Perfil</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="#" onClick={handleLogout}>Sair</a></li>
+                <li>
+                  <button className="dropdown-item" onClick={handleOpenPerfilModal}>
+                    Meu perfil
+                  </button>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    Sair
+                  </button>
+                </li>
               </ul>
             </div>
           </div>

@@ -1,36 +1,63 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
+import { format } from 'date-fns';
 import { Agendamento } from '../../types/Agendamento';
 
+interface RelatorioAPI {
+  periodo: {
+    dataInicio: string;
+    dataFim: string;
+  };
+  totalBruto: string;
+  totalLiquido: string;
+  comissoes: {
+    nome: string;
+    totalComissao: number;
+  }[];
+  agendamentosConcluidos: Agendamento[];
+  agendamentosCancelados: Agendamento[];
+}
+
+
 function Relatorio() {
-    const [startDate, setStartDate] = useState<string>('');
-    const [endDate, setEndDate] = useState<string>('');
-    const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
-    const [error, setError] = useState<string>('');
-    const [isSearchPerformed, setIsSearchPerformed] = useState<boolean>(false); // Estado para controlar se a busca foi realizada
+
+  const [formData, setFormData] = useState({
+    dataInicio: format(new Date(), 'yyyy-MM-dd'),
+    dataFim: format(new Date(), 'yyyy-MM-dd'),
+    incluirCancelados: false
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [relatorio, setRelatorio] = useState<RelatorioAPI | null>(null);
+  const [activeTab, setActiveTab] = useState('concluidos');
   
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+  const gerarRelatorio = async () => {
+    setLoading(true);
+    setError(null);
     
-        if (!startDate || !endDate) {
-          setError('Por favor, selecione ambas as datas.');
-          return;
-        }
-    
-        try {
-          const response = await axios.get('http://localhost:3000/api/agendamentos', {
-            params: { startDate, endDate },
-          });
-            setAgendamentos(response.data);
-            setError('');
-            setIsSearchPerformed(true);
-        } catch (err) {
-            setError('Erro ao buscar agendamentos.');
-            console.error(err);
-            setIsSearchPerformed(true); 
-        }
+    try {
+      const params = {
+        dataInicio: formData.dataInicio,
+        dataFim: formData.dataFim,
+        incluirCancelados: formData.incluirCancelados.toString()
       };
-  
+
+      const response = await api.get<RelatorioAPI>('api/relatorio', { params });
+      setRelatorio(response.data);
+    }  finally {
+      setLoading(false);
+    }
+  };
+
+
     return (
         <div role="main" className="col d-flex flex-column h-sm-100 p-4">
             <div className="instruction bg-light p-4 rounded mb-4 shadow-sm">
@@ -52,80 +79,221 @@ function Relatorio() {
             </div>
   
             <div className="report-container bg-white p-4 rounded shadow-sm">
-              <form onSubmit={handleSubmit} className="mb-4">
-                <div className="row g-3">
-                  <div className="col-md-5">
-                    <label htmlFor="startDate" className="form-label">Data Inicial</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="startDate"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-5">
-                    <label htmlFor="endDate" className="form-label">Data Final</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="endDate"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-2 d-flex align-items-end">
-                    <button type="submit" className="btn background-custom text-white w-100">
-                      Gerar Relatório
-                    </button>
+
+            <div className="card-body">
+          <div className="row mb-3">
+            <div className="col-md-4">
+              <label className="form-label">Data Início</label>
+              <input
+                type="date"
+                className="form-control"
+                name="dataInicio"
+                value={formData.dataInicio}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Data Fim</label>
+              <input
+                type="date"
+                className="form-control"
+                name="dataFim"
+                value={formData.dataFim}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-md-4 d-flex align-items-center">
+              <div className="form-check mt-4">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="incluirCancelados"
+                  checked={formData.incluirCancelados}
+                  onChange={handleChange}
+                />
+                <label className="form-check-label">
+                  Incluir cancelados
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <button
+            className="btn btn-primary"
+            onClick={gerarRelatorio}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Gerando...
+              </>
+            ) : 'Gerar Relatório'}
+          </button>
+          
+          {error && (
+            <div className="alert alert-danger mt-3">
+              {error}
+            </div>
+          )}
+          
+          {relatorio && (
+            <div className="mt-4">
+              <h4 className="mb-3">
+                Período: {new Date(relatorio.periodo.dataInicio).toLocaleDateString()} a {new Date(relatorio.periodo.dataFim).toLocaleDateString()}
+              </h4>
+              
+              <div className="row mb-4">
+                <div className="col-md-4 mb-3">
+                  <div className="card bg-light">
+                    <div className="card-body">
+                      <h5 className="card-title">Total Bruto</h5>
+                      <h3 className="card-text">R$ {relatorio.totalBruto}</h3>
+                    </div>
                   </div>
                 </div>
-              </form>
-  
-              {error && <div className="alert alert-danger">{error}</div>}
-  
-              {/* Tabela só é exibida se a busca foi realizada */}
-              {isSearchPerformed && (
-                <table className="table-responsive table table-hover">
-                  <thead className="table-light">
-                    <tr>
-                      <th>Data</th>
-                      <th>Cliente</th>
-                      <th>Serviço</th>
-                      <th>Funcionário</th>
-                      <th>Valor do serviço</th>
-                      <th>Descontos</th>
-                      <th>Comissão do funcionário</th>
-                      <th>Valor Líquido</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {agendamentos.length > 0 ? (
-                      agendamentos.map((agendamento) => (
-                        <tr key={agendamento.id}>
-                          <td>{agendamento.data}</td>
-                          <td>{agendamento.cliente}</td>
-                          <td>{agendamento.servico}</td>
-                          <td>{agendamento.funcionario}</td>
-                          <td>R$ {agendamento.valorServico.toFixed(2)}</td>
-                          <td>R$ {agendamento.descontos.toFixed(2)}</td>
-                          <td>R$ {agendamento.comissaoFuncionario.toFixed(2)}</td>
-                          <td>R$ {agendamento.valorLiquido.toFixed(2)}</td>
-                        </tr>
-                      ))
-                    ) : (
+                <div className="col-md-4 mb-3">
+                  <div className="card bg-light">
+                    <div className="card-body">
+                      <h5 className="card-title">Total Líquido</h5>
+                      <h3 className="card-text">R$ {relatorio.totalLiquido}</h3>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4 mb-3">
+                  <div className="card bg-light">
+                    <div className="card-body">
+                      <h5 className="card-title">Total Comissões</h5>
+                      <h3 className="card-text">
+                        R$ {relatorio.comissoes
+                            .reduce((sum, comissao) => sum + comissao.totalComissao, 0).toFixed(2)
+                        }
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <ul className="nav nav-tabs mb-3">
+                <li className="nav-item">
+                  <button
+                    className={`nav-link ${activeTab === 'concluidos' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('concluidos')}
+                  >
+                    Agendamentos Concluídos
+                  </button>
+                </li>
+                {relatorio.agendamentosCancelados.length > 0 && (
+                  <li className="nav-item">
+                    <button
+                      className={`nav-link ${activeTab === 'cancelados' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('cancelados')}
+                    >
+                      Cancelados ({relatorio.agendamentosCancelados.length})
+                    </button>
+                  </li>
+                )}
+                <li className="nav-item">
+                  <button
+                    className={`nav-link ${activeTab === 'comissoes' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('comissoes')}
+                  >
+                    Comissões
+                  </button>
+                </li>
+              </ul>
+              
+              {activeTab === 'concluidos' && (
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
                       <tr>
-                        <td colSpan={8} className="text-center">Nenhum agendamento encontrado.</td>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Funcionário</th>
+                        <th>Serviço</th>
+                        <th>Desconto aplicado</th>
+                        <th className="text-end">Valor (R$)</th>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {relatorio.agendamentosConcluidos.map((agendamento) => (
+                        <tr key={agendamento.id}>
+                          <td>{new Date(agendamento.dia).toLocaleDateString()}</td>
+                          <td>{agendamento.cliente_nome}</td>
+                          <td>{agendamento.funcionario_id}</td>
+                          <td>
+                            <ul className="list-unstyled mb-0">
+                              {agendamento.Servicos?.map((servico, idx) => (
+                                <li key={idx}>
+                                  {servico.nome} - R${(servico.preco)}
+                                </li>
+                              ))}
+                            </ul>
+                          </td>
+                          <td>{agendamento.desconto}</td>
+                          <td className="text-end">{agendamento.total}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              
+              {activeTab === 'cancelados' && relatorio.agendamentosCancelados.length > 0 && (
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Cliente</th>
+                        <th>Funcionário</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Motivo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {relatorio.agendamentosCancelados.map((agendamento) => (
+                        <tr key={agendamento.id}>
+                          <td>{agendamento.cliente_nome}</td>
+                          <td>{agendamento.funcionario_id}</td>
+                          <td>{agendamento.dia}</td>
+                          <td>{agendamento.hora}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              
+              {activeTab === 'comissoes' && (
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Funcionário</th>
+                        <th className="text-end">Comissão (R$)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {relatorio.comissoes.map((comissao, index) => (
+                        <tr key={index}>
+                          <td>{comissao.nome}</td>
+                          <td className="text-end">{comissao.totalComissao.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
-            </div>
-    );
-  };
+          )}
+        </div>
+
   
-  export default Relatorio;
+              
+    </div>
+  </div>
+)};
+  
+export default Relatorio;

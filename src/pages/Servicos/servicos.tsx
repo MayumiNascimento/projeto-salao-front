@@ -131,6 +131,7 @@ function Servicos() {
         onDelete={handleDeleteServico}
         />
 
+    {/* ============= modais ============== */}
       <AddServicoModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
