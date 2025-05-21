@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate  } from 'react-router';
-
+import { Link, useNavigate } from 'react-router';
 import PerfilModal from '../modalPerfil/modalPerfil';
-import Funcionario  from '../../types/Funcionario';
+import Funcionario from '../../types/Funcionario';
 
 function Sidebar() {
+  const tipo = localStorage.getItem('tipo'); // 'admin' ou 'funcionario'
   const [usuario, setUsuario] = useState<Funcionario | null>(null);
+  const [isPerfilModalOpen, setIsPerfilModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove o token
-    navigate('/'); // Redireciona para o login
-  };
-
-  // Recupera os dados do funcionário do localStorage ao carregar o componente
   useEffect(() => {
     const funcionarioSalvo = localStorage.getItem('funcionario');
     if (funcionarioSalvo) {
@@ -21,78 +16,89 @@ function Sidebar() {
     }
   }, []);
 
-  const [isPerfilModalOpen, setIsPerfilModalOpen] = useState<boolean>(false);
-
-  const handleOpenPerfilModal = () => {
-    setIsPerfilModalOpen(true);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
-  const handleClosePerfilModal = () => {
-    setIsPerfilModalOpen(false);
-  };
+  const handleOpenPerfilModal = () => setIsPerfilModalOpen(true);
+  const handleClosePerfilModal = () => setIsPerfilModalOpen(false);
 
   return (
-    <div className="container-fluid overflow-hidden">
-      <div className="row vh-100 overflow-auto">
-        <div className="col-12 col-md-auto px-sm-2 px-0 background-custom d-flex flex-column sticky-top sidebar h-auto overflow-auto">
-          <div className="d-flex flex-sm-column flex-row flex-grow-1 align-items-center align-items-sm-start px-3 pt-2 text-white">
-            <Link to="/" className="d-flex align-items-center pb-sm-3 mb-md-5 me-md-auto text-white text-decoration-none">
-              <span className="fs-5px">BeleSys</span>
-            </Link>
-            <ul className="nav nav-pills flex-sm-column flex-row flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start w-100" id="menu">
-              <li className="nav-item w-100">
-                {/* <Link to="/home" className="nav-link px-sm-0 px-3 text-light">
-                  <i className="fs-5 bi-house"></i><span className="ms-1 d-none d-sm-inline"> Home</span>
-                </Link> */}
-              </li>
-              <li className="nav-item w-100">
-                <Link to="/relatorio" className="nav-link px-sm-0 px-2 text-light">
-                  <i className="bi bi-file-earmark-bar-graph"></i><span className="ms-1 d-none d-sm-inline"> Relatórios</span>
+    <div className="w-100 w-md-auto sidebar">
+      <div className=" sidebar d-flex flex-row flex-md-column align-items-center align-items-md-start background-custom text-white py-2 px-2 px-md-3">
+        
+        <Link to="/" className="d-flex align-items-center text-white text-decoration-none mb-0 mb-md-3 me-3 me-md-0">
+          <i className="bi bi-scissors fs-5 d-md-none me-1"></i>
+          <span className="fs-5 d-none d-md-inline">BeleSys</span>
+        </Link>
+
+        <ul className="nav nav-pills flex-row flex-md-column justify-content-center w-100">
+
+          {tipo === 'admin' && (
+            <>
+              <li className="nav-item">
+                <Link to="/home" className="nav-link text-light px-2">
+                  <i className="bi bi-house fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Dashboard</span>
                 </Link>
               </li>
-              <li className='nav-item w-100'>
-                <Link to="/agenda" className="nav-link px-sm-0 px-2 text-light">
-                  <i className="bi bi-calendar4-week"></i><span className="ms-1 d-none d-sm-inline"> Agenda</span>
+              <li className="nav-item">
+                <Link to="/relatorio" className="nav-link text-light px-2">
+                  <i className="bi bi-file-earmark-bar-graph fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Relatórios</span>
                 </Link>
               </li>
-              <li className='nav-item w-100'>
-                <Link to="/servicos" className="nav-link px-sm-0 px-2 text-light">
-                  <i className="bi bi-tags"></i><span className="ms-1 d-none d-sm-inline"> Serviços</span>
+              <li className="nav-item">
+                <Link to="/agenda" className="nav-link text-light px-2">
+                  <i className="bi bi-calendar4-week fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Agenda</span>
                 </Link>
               </li>
-              <li className='nav-item w-100'>
-                <Link to="/funcionarios" className="nav-link px-sm-0 px-2 text-light w-100">
-                  <i className="bi bi-people"></i><span className="ms-1 d-none d-sm-inline"> Funcionarios</span>
+              <li className="nav-item">
+                <Link to="/servicos" className="nav-link text-light px-2">
+                  <i className="bi bi-tags fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Serviços</span>
                 </Link>
               </li>
-            </ul>
-            <div className="dropdown py-sm-4 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
-              <button
-                className="d-flex align-items-center text-white text-decoration-none dropdown-toggle bg-transparent border-0"
-                id="dropdownUser1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="bi bi-person"></i>
-                <span className="d-none d-sm-inline mx-1">{usuario?.nome || 'Usuário'}</span>
-              </button>
-              <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                <li>
-                  <button className="dropdown-item" onClick={handleOpenPerfilModal}>
-                    Meu perfil
-                  </button>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <button className="dropdown-item" onClick={handleLogout}>
-                    Sair
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
+              <li className="nav-item">
+                <Link to="/funcionarios" className="nav-link text-light px-2">
+                  <i className="bi bi-people fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Funcionários</span>
+                </Link>
+              </li>
+            </>
+          )}
+
+          {tipo === 'funcionario' && (
+            <li className="nav-item">
+              <Link to="/agendaFuncionario" className="nav-link text-light px-2">
+                <i className="bi bi-calendar4-week fs-5"></i>
+                <span className="d-none d-md-inline ms-1">Minha agenda</span>
+              </Link>
+            </li>
+          )}
+        </ul>
+
+        <div className="ms-auto ms-md-0 mt-0 mt-md-auto dropdown">
+          <button
+            className="d-flex align-items-center text-white text-decoration-none dropdown-toggle bg-transparent border-0"
+            id="dropdownUser1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i className="bi bi-person fs-5"></i>
+            <span className="d-none d-md-inline ms-2">{usuario?.nome || 'Usuário'}</span>
+          </button>
+          <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li>
+              <button className="dropdown-item" onClick={handleOpenPerfilModal}>Meu perfil</button>
+            </li>
+            <li><hr className="dropdown-divider" /></li>
+            <li>
+              <button className="dropdown-item" onClick={handleLogout}>Sair</button>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -106,6 +112,6 @@ function Sidebar() {
       )}
     </div>
   );
-};
+}
 
 export default Sidebar;

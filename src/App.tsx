@@ -7,47 +7,122 @@ import Login from './pages/Login/Login';
 import Funcionarios from './pages/Funcionarios/Funcionarios';
 import Relatorio from './pages/Relatorio/relatorio';
 import Agenda from './pages/Agenda/Agenda';
+import Dashboard from './pages/Dashboard/Dashboard';
+import AgendaFuncionario from './pages/AgendaFuncionario/AgendaFuncionario';
 
-// Componente para proteger rotas
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const token = localStorage.getItem('token'); // Verifica se o token existe
-  return token ? children : <Navigate to="/login" />; // Redireciona para o login se não houver token
-};
+
+  // Função auxiliar para pegar o tipo do usuário logado
+    const getTipo = () => {
+      const funcionario = localStorage.getItem('funcionario');
+      if (!funcionario) return null;
+      try {
+        return JSON.parse(funcionario).tipo;
+      } catch {
+        return null;
+      }
+    };
+
+    //Rotas protegidas
+    const AdminRoute = ({ children }: { children: JSX.Element }) => {
+      const token = localStorage.getItem('token');
+      const tipo = getTipo();
+      return token && tipo === 'admin' ? children : <Navigate to="/login" />;
+    };
+    
+    const FuncRoute = ({ children }: { children: JSX.Element }) => {
+      const token = localStorage.getItem('token');
+      const tipo = getTipo();
+      return token && tipo === 'funcionario' ? children : <Navigate to="/login" />;
+    };
+
 
 function App() {
+  
+  const Layout = ({ children }: { children: React.ReactNode }) => (
+    <div className="d-flex flex-column flex-md-row min-vh-100">
+      <main className="flex-grow bg-light">
+        <Sidebar />
+      </main>
+      <div className="flex-grow-1 p-3 overflow-auto">{children}</div>
+    </div>
+  );
+
   return (
     <Router>
       <Routes>
-       {/* Rota pública */}
-       <Route path="/" element={<Login />} />
+        {/* Rota de login */}
+        <Route path="/login" element={<Login />} />
 
-      {/* Rotas protegidas */}
+        {/* Redirecionamento padrão */}
+        <Route path="/" element={<Navigate to="/home" />} />
+
+        {/* ROTAS PARA ADMINISTRADOR */}
         <Route
-          path="/*"
+          path="/home"
           element={
-            <PrivateRoute>
-              <div className="d-flex flex-column flex-md-row min-vh-100">
-                {/* Sidebar */}
-                <div className="col-12 col-md-3 col-xl-2 p-0" style={{ flexShrink: 0 }}>
-                  <Sidebar />
-                </div>
+            <AdminRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/servicos"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Servicos />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/agenda"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Agenda />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/funcionarios"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Funcionarios />
+              </Layout>
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/relatorio"
+          element={
+            <AdminRoute>
+              <Layout>
+                <Relatorio />
+              </Layout>
+            </AdminRoute>
+          }
+        />
 
-                {/* Conteúdo principal */}
-                <div className="col-12 col-md-9 col-xl-10 p-3 overflow-auto">
-                  <Routes>
-                    <Route path='/agenda' element={<Agenda />} />
-                    <Route path="/servicos" element={<Servicos />} />
-                    <Route path="/funcionarios" element={<Funcionarios />} />
-                    <Route path='/relatorio' element={<Relatorio />} />
-                  </Routes>
-                </div>
-              </div>
-            </PrivateRoute>
+        {/* ROTAS PARA FUNCIONÁRIO */}
+        <Route
+          path="/AgendaFuncionario"
+          element={
+            <FuncRoute>
+              <Layout>
+                <AgendaFuncionario />
+              </Layout>
+            </FuncRoute>
           }
         />
       </Routes>
     </Router>
   );
+
 }
 
-export default App;
+export default App

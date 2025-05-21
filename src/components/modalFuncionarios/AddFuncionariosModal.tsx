@@ -57,17 +57,21 @@ const AddFuncionarioModal: React.FC<AddFuncionarioModalProps> = ({ isOpen, onClo
                   required
                 />
               </div>
-              <div className="mb-3">
-                <label htmlFor="senha" className="form-label">Senha:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="senha"
-                  name="senha"
-                  defaultValue={selectedFuncionario?.senha || ''}
-                  required
-                />
-              </div>
+
+              {selectedFuncionario ? 
+                <span></span>  :
+                <div className="mb-3">
+                  <label htmlFor="senha" className="form-label">Senha:</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    id="senha"
+                    name="senha"
+                    defaultValue={''}
+                    required
+                  />           
+                </div>
+              }
               <div className="mb-3">
                 <label htmlFor="especialidade" className="form-label">Especialidade:</label>
                 <input

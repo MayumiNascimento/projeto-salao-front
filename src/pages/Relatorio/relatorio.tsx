@@ -57,11 +57,16 @@ function Relatorio() {
     }
   };
 
-
+    const formatarData = (data: string) => {
+    return new Date(data).toLocaleDateString('pt-BR', {
+    timeZone: 'UTC'
+    });
+  };
+  
     return (
         <div role="main" className="col d-flex flex-column h-sm-100 p-4">
             <div className="instruction bg-light p-4 rounded mb-4 shadow-sm">
-              <h1 className="h4 mb-3">Gerar relatório</h1>
+              <h1 className="h4 mb-3">Gerar relatório</h1> <hr className="mb-4" />
               <p className="mb-3">
                 Para gerar um relatório de atendimentos, siga os passos abaixo:
               </p>
@@ -140,7 +145,7 @@ function Relatorio() {
           {relatorio && (
             <div className="mt-4">
               <h4 className="mb-3">
-                Período: {new Date(relatorio.periodo.dataInicio).toLocaleDateString()} a {new Date(relatorio.periodo.dataFim).toLocaleDateString()}
+                Período: {formatarData(relatorio.periodo.dataInicio)} a {formatarData(relatorio.periodo.dataFim)}
               </h4>
               
               <div className="row mb-4">
@@ -249,7 +254,6 @@ function Relatorio() {
                         <th>Funcionário</th>
                         <th>Data</th>
                         <th>Hora</th>
-                        <th>Motivo</th>
                       </tr>
                     </thead>
                     <tbody>

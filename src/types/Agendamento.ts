@@ -1,7 +1,7 @@
 import Funcionario from "./Funcionario";
 import { Servico } from "./Servico";
 export type Agendamento = {
-  id: number;
+  id?: number;
   cliente_nome: string;
   cliente_telefone: string;
   funcionario_id: number;
@@ -10,7 +10,7 @@ export type Agendamento = {
   status: 'agendado' | 'concluido' | 'cancelado';
   observacoes?: string;
   desconto?: number;
-  total: string;
+  total: number;
   Servicos: Servico[];
   Funcionario: Funcionario;
 };

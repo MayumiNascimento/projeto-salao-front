@@ -61,27 +61,30 @@ function Agenda() {
   };
 
   const handleCreate  = async (eventData: any) => {
+
     try {
+      console.log('Dados enviados para criação:', eventData); 
       await api.post('api/agendamentos', eventData);
-      alert('Agendamento criado com sucesso!');
+      Swal.fire('Sucesso!','Agendamento criado com sucesso!','success');
       fetchEvents(); // Atualiza o calendário
       setShowModal(false); // Fecha o modal
     } catch (error) {
       console.error('Erro ao criar agendamento:', error);
-      alert('Erro ao criar agendamento. Tente novamente.');
+      Swal.fire('Erro!', 'Não foi possível criar o agendamento', 'error');
     }
   };
 
   // Atualiza o status de um agendamento
   const handleUpdateEventStatus = async (id: number, status: string) => {
     try {
-      await api.put(`api/agendamentos/${id}`, { status });
-      alert('Status atualizado com sucesso!');
+      await api.put(`api/agendamentos/${id}`, { ...selectedEvent, status });
+      Swal.fire('Sucesso!','Status atualizado com sucesso!','success');
       fetchEvents(); // Atualiza o calendário
       setShowViewModal(false); // Fecha o modal
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
-      alert('Erro ao atualizar status. Tente novamente.');
+      Swal.fire('Erro!', 'Não foi possível atualizar o status', 'error');
+      
     }
   };
 
@@ -114,6 +117,7 @@ return (
   <div className="container-fluid">
       <div className="row">
         <main role="main" className="col d-flex flex-column h-sm-100">
+        <h1 className="mt-4">Agenda de Atendimentos</h1> <hr className="mb-4" />
           <Calendar onEventClick={handleEventClick} onDateClick={handleDateClick} />
 
           <BotaoFlutuante onClick={() => setShowModal(true)} />
@@ -121,13 +125,24 @@ return (
         </main>
       </div>
 
+    {showEditModal && selectedEvent && (
+        <AddAgendamentoModal
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleUpdateEvent}
+          selectedDate={selectedEvent.dia}
+          onUpdate={selectedEvent}
+        />
+    )}
+
+    {showModal && (
       <AddAgendamentoModal
         show={showModal}
         onClose={() => setShowModal(false)}
         onSubmit={handleCreate}
         selectedDate={selectedDate}
-        onUpdate={selectedEvent}
       />
+    )}
 
     {selectedEvent && (
       <ViewAgendamentoModal
@@ -135,12 +150,13 @@ return (
         onClose={() => setShowViewModal(false)}
         agendamento={selectedEvent}
         onUpdateStatus={(id: number, status: string) => handleUpdateEventStatus(id, status)}
-        onUpdate={handleEditClick}
-      />
+        onUpdate={handleEditClick} 
+        selectedDate={selectedDate}      
+        />
     )}
+
     </div>
   )
 }
 
 export default Agenda;
-

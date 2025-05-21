@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import Swal from 'sweetalert2';
 import Funcionario  from '../../types/Funcionario';
 
@@ -9,7 +9,7 @@ interface PerfilModalProps {
   usuario: Funcionario
 }
 
-const PerfilModal: React.FC<PerfilModalProps> = ({ isOpen, onClose, usuario }) => {
+function PerfilModal({ isOpen, onClose, usuario } : PerfilModalProps){
 const [senhaAtual, setSenhaAtual] = useState<string>('');
   const [novaSenha, setNovaSenha] = useState<string>('');
   const [confirmarSenha, setConfirmarSenha] = useState<string>('');
@@ -25,8 +25,8 @@ const [senhaAtual, setSenhaAtual] = useState<string>('');
   
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(
-        'http://localhost:3000/api/funcionarios/trocar-senha',
+      const response = await api.post(
+        'api/funcionarios/trocar-senha',
         {
           id: usuario.id,
           senhaAtual,
@@ -48,6 +48,7 @@ const [senhaAtual, setSenhaAtual] = useState<string>('');
 
     } catch (erro) {
       console.error(erro);
+      Swal.fire('Erro','Senha atual incorreta')
     }
   };
 

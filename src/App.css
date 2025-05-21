@@ -1,0 +1,21 @@
+
+.sidebar {
+    width: 250px;
+}
+/* Faz o sidebar ocupar a altura total da viewport no desktop */
+@media (min-width: 768px) {
+    .sidebar {
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+  }
+  
+  /* Mobile - ajusta para que o menu possa ser escondido (se for o caso) */
+  @media (max-width: 767.98px) {
+    .sidebar {
+      width: 100%;
+      min-height: auto;
+      position: relative;
+    }
+  }

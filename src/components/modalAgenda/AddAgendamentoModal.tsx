@@ -10,22 +10,28 @@ import { Agendamento } from '../../types/Agendamento';
 interface AddAgendamentoModalProps {
   show: boolean;
   onClose: () => void;
-  onSubmit: (event: any) => void; 
-  selectedDate?: string | null;
-  onUpdate?: Agendamento
+  onSubmit: (agendamentoData: Agendamento) => void;
+  selectedDate: string | null;
+  onUpdate?: Agendamento;
 }
 
 const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose, onSubmit, selectedDate, onUpdate }) => {
   const [clienteNome, setClienteNome] = useState('');
   const [clienteTelefone, setClienteTelefone] = useState('');
   const [servicoId, setServicoId] = useState<number[]>([]);
-  const [funcionario, setFuncionario] = useState<Funcionario[]>([]);
+  const [funcionarioId, setFuncionarioId] = useState<number | ''>('');
   const [dia, setDia] = useState(selectedDate || '');
   const [hora, setHora] = useState('');
   const [observacoes, setObservacoes] = useState('');
 
-  const [desconto, setDesconto] = useState<number | ''>('');
+  const [desconto, setDesconto] = useState(0);
   const [total, setTotal] = useState(0);
+  const [valorComDesconto, setValorComDesconto] = useState(total - desconto);
+
+  useEffect(() => {
+    setValorComDesconto(Math.max(total - desconto, 0)); // impede valores negativos
+  }, [total, desconto]);
+
 
   const [servicos, setServicos] = useState<Servico[]>([]); 
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]); 
@@ -58,7 +64,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
       }
     }, [show]);
 
-      // Formatação para o React select
+  // Formatação para o React select
   const servicoOptions = servicos.map((servico) => ({
     value: servico.id,
     label: `${servico.nome} - R$ ${servico.preco}`,
@@ -73,69 +79,56 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
     if (onUpdate) {
       setClienteNome(onUpdate.cliente_nome);
       setClienteTelefone(onUpdate.cliente_telefone);
-      setServicos(onUpdate.Servicos);
-      setFuncionario(onUpdate.Funcionario);
+      setServicoId(onUpdate.Servicos.map(servico => servico.id)); // necessário para o Select
+      setFuncionarioId(onUpdate.funcionario_id); // setar apenas o ID
       setDia(onUpdate.dia);
       setHora(onUpdate.hora);
       setObservacoes(onUpdate.observacoes || '');
-      setDesconto(onUpdate.desconto || '');
-      setTotal(parseFloat(onUpdate.total));
+      setDesconto(onUpdate.desconto || 0);
+      setTotal(onUpdate.total);
     } else {
-      // Limpa os campos se for um novo agendamento
       setClienteNome('');
       setClienteTelefone('');
       setServicos([]);
+      setServicoId([]);
       setFuncionarioId('');
       setDia(selectedDate || '');
       setHora('');
       setObservacoes('');
-      setDesconto('');
+      setDesconto(0);
       setTotal(0);
     }
   }, [onUpdate, selectedDate]);
-
-
-  // ==================================
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const eventData: Agendamento = {
-      cliente_nome: clienteNome,
-      cliente_telefone: clienteTelefone,
-      funcionario_id: funcionarioId as number,
-      dia,
-      hora,
-      observacoes,
-      desconto: desconto || 0,
-      status: 'agendado',
-      Servicos: servicos,
-      id: 0,
-      total: '',
-      Funcionario: funcionarios
-    };
-
-    try {
-      if (onUpdate) {
-        // Edição - PUT request
-        await api.put(`api/agendamentos/${onUpdate.id}`, eventData);
-        Swal.fire('Atualizado!', 'O agendamento foi atualizado com sucesso.', 'success');
-      } else {
-        // Criação - POST request
-        const response = await api.post('api/agendamentos', eventData);
-        eventData.id = response.data.id;
-      }
-      
-      onSubmit({
-        ...eventData,
-        Servicos: servicos.filter(s => servicoId.includes(s.id))
-      });
-      onClose();
-    } catch (error) {
-      console.error('Erro ao salvar agendamento:', error);
-      Swal.fire('Erro!', 'Não foi possível salvar o agendamento.', 'error');
-    }
+  const eventData: Agendamento = {
+    id: onUpdate?.id || undefined,
+    cliente_nome: clienteNome,
+    cliente_telefone: clienteTelefone,
+    funcionario_id: funcionarioId as number,
+    dia,
+    hora,
+    observacoes,
+    desconto: desconto || 0,
+    status: onUpdate?.status || 'agendado',
+    Servicos: servicos.filter(s => servicoId.includes(s.id)),
+    total,
+    Funcionario: {} as Funcionario
   };
+
+  try {
+    onSubmit(eventData);
+    onClose();
+  } catch (error) {
+    console.error('Erro ao salvar agendamento:', error);
+    Swal.fire('Erro!', 'Não foi possível salvar o agendamento.', 'error');
+    console.log(eventData);
+  }
+};
+
 
   useEffect(() => { //atualiza o campo 'dia' quando o selectedDate é atualizado
     if(selectedDate){
@@ -143,6 +136,16 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
     }
   }, [selectedDate])
 
+  useEffect(() => {
+    const selectedServicos = servicos.filter(servico => servicoId.includes(Number(servico.id)));
+    const novoTotal = selectedServicos.reduce(
+      (acc, servico) => acc + parseFloat(servico.preco.toString()), 0);
+
+      const descontoNum = parseFloat(desconto.toString()) || 0;
+  
+      setTotal(novoTotal - descontoNum);
+
+  }, [servicoId, servicos]);
 
   return (
     <div className={`modal fade ${show ? 'show' : ''}`} style={{ display: show ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -213,8 +216,10 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                 <Select
                   options={servicoOptions}
                   isMulti // Permite seleção múltipla
-                  onChange={() => {
-                    setServicos(servicos);
+                  value={servicoOptions.filter(option => servicoId.includes(option.value))}
+                  onChange={(selectedOptions) => {
+                    const selectedIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                    setServicoId(selectedIds);
                   }}
                   placeholder="Selecione os serviços..."
                 />
@@ -224,9 +229,10 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                 <label htmlFor="funcionarioId">*Funcionário:</label>
                 <Select
                   options={funcionarioOptions}
+                  value={funcionarioOptions.find(option => option.value === funcionarioId)}
                   onChange={(selectedOption) => {
                     if (selectedOption) {
-                      setFuncionario(selectedOption.value);
+                      setFuncionarioId(selectedOption.value);
                     }
                   }}
                   placeholder="Selecione o funcionário..."
@@ -240,7 +246,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                     type="text"
                     className="form-control"
                     id="valorTotal"
-                    value={total}
+                    value={`R$ ${Number(total).toFixed(2)}`}
                     disabled
                   />
                 </div>
@@ -262,7 +268,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                   type="text"
                   className="form-control"
                   id="valorComDesconto"
-                  value={total}
+                  value={valorComDesconto}
                   disabled
                 />
               </div>

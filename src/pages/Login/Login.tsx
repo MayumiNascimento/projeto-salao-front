@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import api from '../../services/api';
 
-const Login = () => {
+function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
@@ -28,12 +28,28 @@ const Login = () => {
       // Salva o token no localStorage
       localStorage.setItem('token', token);
 
+      // Salva os dados do funcionário no localStorage
+      localStorage.setItem('funcionario', JSON.stringify(funcionario));
 
       // Salva os dados do funcionário no localStorage
       localStorage.setItem('funcionario', JSON.stringify(funcionario));
 
-      // Redireciona para a página principal
-      navigate('/servicos'); // Alterar para a rota desejada após o login
+      // Salva o tipo do usuário ('admin' ou 'funcionario')
+      localStorage.setItem('tipo', funcionario.tipo);
+
+      // Redireciona para a rota de acordo com o role
+      if (funcionario.tipo === 'admin') {
+        console.log(data.funcionario)
+        navigate('/home');
+      } 
+        else if (funcionario.tipo === 'funcionario') {
+          console.log(data.funcionario)
+        navigate('/agendaFuncionario');
+
+      } else {
+        throw new Error('usuário inválido');
+      }
+      
     } catch (err) {
       setError('Erro ao fazer login. Verifique suas credenciais.');
     }

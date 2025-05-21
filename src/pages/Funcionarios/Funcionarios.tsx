@@ -132,7 +132,7 @@ function Funcionarios (){
 
   return (
     <main role="main" className="flex-column h-sm-100">
-      <h1 className="mt-4">Funcionários Cadastrados</h1>
+      <h1 className="mt-4">Funcionários Cadastrados</h1> <hr className="mb-4" />
 
       <div className="mb-3">
         <input

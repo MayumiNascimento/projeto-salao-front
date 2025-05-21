@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import api from '../../services/api';
 import { Agendamento } from '../../types/Agendamento';
 
 interface ViewAgendamentoModalProps {
@@ -9,35 +8,54 @@ interface ViewAgendamentoModalProps {
   agendamento: Agendamento;
   onUpdateStatus: (id: number, status: 'agendado' | 'concluido' | 'cancelado') => void;
   onUpdate: (agendamento: Agendamento) => void;
+  selectedDate: string | null;
 }
 
 function ViewAgendamentoModal({ show, onClose, agendamento, onUpdateStatus, onUpdate }: ViewAgendamentoModalProps) {
   const [status, setStatus] = useState(agendamento.status);
 
-  const handleUpdateStatus = async () => {
-    try {
-      await api.put(`/api/agendamentos/${agendamento.id}`, { status });
-      onUpdateStatus(agendamento.id, status);
-      onClose();
-      Swal.fire({
-        title: 'Sucesso!',
-        text: 'Agendamento atualizado com sucesso',
-        icon: 'success',
-        confirmButtonColor: '#4e73df'
-      });
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-      Swal.fire({
-        title: 'Erro!',
-        text: 'Não foi possível atualizar o agendamento',
-        icon: 'error',
-        confirmButtonColor: '#e74a3b'
-      });
-    }
-  };
+  useEffect(() => {
+    setStatus(agendamento.status);
+  }, [agendamento]);
+  
+
+const handleUpdateStatus = async () => {
+  if (!agendamento.id) {
+    Swal.fire({
+      title: 'Erro!',
+      text: 'Agendamento inválido',
+      icon: 'error',
+      confirmButtonColor: '#e74a3b'
+    });
+    return;
+  }
+
+  try {
+    await onUpdateStatus(agendamento.id, status);
+
+    Swal.fire({
+      title: 'Sucesso!',
+      text: 'Status atualizado com sucesso',
+      icon: 'success',
+      confirmButtonColor: '#4e73df'
+    });
+
+    onClose();
+  } catch (error) {
+    console.error('Erro ao atualizar status:', error);
+    Swal.fire({
+      title: 'Erro!',
+      text: 'Não foi possível atualizar o status',
+      icon: 'error',
+      confirmButtonColor: '#e74a3b'
+    });
+  }
+};
 
   const formatarData = (data: string) => {
-    return new Date(data).toLocaleDateString('pt-BR');
+    return new Date(data).toLocaleDateString('pt-BR', {
+    timeZone: 'UTC'
+    });
   };
 
   const getStatusColor = () => {
