@@ -6,6 +6,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
+  const [mostrarCredenciais, setMostrarCredenciais] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -102,6 +103,29 @@ function Login() {
             Entrar
           </button>
         </form>
+
+                <div className="text-center mt-3">
+          <button
+            className="btn btn-sm text-light"
+            style={{ fontSize: '0.9rem', textDecoration: 'underline' }}
+            onClick={() => setMostrarCredenciais(!mostrarCredenciais)}
+            type="button"
+          >
+            {mostrarCredenciais ? 'Ocultar credenciais de teste' : 'Mostrar credenciais de teste'}
+          </button>
+
+          {mostrarCredenciais && (
+            <div className="mt-2 text-start text-light small border rounded p-2" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+              <p className="mb-1"><strong>Admin:</strong></p>
+              <p className="mb-1">Email: <code>yuri@gmail.com</code></p>
+              <p className="mb-3">Senha: <code>123</code></p>
+
+              <p className="mb-1"><strong>Funcionário:</strong></p>
+              <p className="mb-1">Email: <code>charlote@gmail.com</code></p>
+              <p>Senha: <code>123456</code></p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
 

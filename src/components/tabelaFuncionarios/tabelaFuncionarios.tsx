@@ -33,40 +33,43 @@ const TabelaFuncionarios: React.FC<TabelaFuncionariosProps> = ({
           <th>Nome</th>
           <th>Email</th>
           <th>Especialidade</th>
-          <th>Tipo</th>
-          <th>Comissão</th>
         </tr>
       </thead>
       <tbody>
-        {filteredFuncionarios.map((funcionario) => (
+        {filteredFuncionarios.map((funcionario) => {
+          const desativado = funcionario.nome.startsWith('Funcionário Desativado');
+
+        return(
+          
           <tr key={funcionario.id}>
             <td>{funcionario.nome}</td>
             <td>{funcionario.email}</td>
-            <td>{funcionario.especialidade}</td>
-            <td>{funcionario.tipo}</td>
-            <td>{funcionario.comissao}%</td>
+            <td>{funcionario.especialidade} </td>
             <td>
-                  <button
-                    className="btn btn-sm border mr-2"
-                    onClick={() => onView(funcionario)}
-                  >
-                    <i className="bi bi-eye"></i>
-                  </button>
-                  <button
-                    className="btn btn-sm border mr-2"
-                    onClick={() => {onEdit(funcionario); }}
-                  >
-                    <i className="bi bi-pencil"></i>
-                  </button>
-                  <button
-                    className="btn btn-sm btn-danger"
-                    onClick={() => onDelete(funcionario.id!)}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </td>
+              <button
+                className="btn btn-sm border mr-2"
+                onClick={() => onView(funcionario)}
+                disabled={desativado}
+              >
+                <i className="bi bi-eye"></i>
+              </button>
+              <button
+                className="btn btn-sm border mr-2"
+                onClick={() => {onEdit(funcionario); }}
+                disabled={desativado}
+              >
+                <i className="bi bi-pencil"></i>
+              </button>
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => onDelete(funcionario.id!)}
+                disabled={desativado}
+              >
+                <i className="bi bi-trash"></i>
+              </button>
+            </td>
           </tr>
-        ))}
+        )})}
       </tbody>
     </table>
   );

@@ -58,27 +58,29 @@ function Funcionarios (){
 
   const handleDeleteFuncionario = async (id: number) => {
     const result = await Swal.fire({
-      title: 'Tem certeza?',
-      text: 'Você não poderá reverter isso!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sim, excluir!',
-      cancelButtonText: 'Cancelar',
-    });
+    title: 'Tem certeza?',
+    text: 'Essa ação irá desativar o funcionário permanentemente, Deseja continuar?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sim, continuar!',
+    cancelButtonText: 'Cancelar',
+  });
 
-    if (result.isConfirmed) {
-      try {
-        await api.delete(`api/funcionarios/${id}`); 
-        setFuncionarios(funcionarios.filter((funcionario) => funcionario.id !== id));
+  if (result.isConfirmed) {
+    try {
+      const response = await api.delete(`api/funcionarios/${id}`); 
+      setFuncionarios((prev) =>
+        prev.filter((funcionario) => funcionario.id !== id)
+      );
 
-        Swal.fire('Excluído!', 'O funcionário foi excluído com sucesso.', 'success');
-      } catch (error) {
-        console.error('Erro ao excluir funcionário:', error);
-        Swal.fire('Erro!', 'Não foi possível excluir o funcionário.', 'error');
-      }
+      Swal.fire('Sucesso!', response.data.message, 'success');
+    } catch (error) {
+      console.error('Erro ao desativar funcionário:', error);
+      Swal.fire('Erro!', 'Não foi possível desativar o funcionário.', 'error');
     }
+  }
   };
 
   const handleUpdateFuncionario = async (formData: FormData) => {

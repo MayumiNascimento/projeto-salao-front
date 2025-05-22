@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Funcionario from '../../types/Funcionario';
+import Swal from 'sweetalert2';
 
 interface AddFuncionarioModalProps {
   isOpen: boolean;
@@ -8,7 +9,29 @@ interface AddFuncionarioModalProps {
   selectedFuncionario?: Funcionario | null;
 }
 
-const AddFuncionarioModal: React.FC<AddFuncionarioModalProps> = ({ isOpen, onClose, onSubmit, selectedFuncionario }) => {
+function AddFuncionarioModal ({ isOpen, onClose, onSubmit, selectedFuncionario }: AddFuncionarioModalProps ) {
+
+  const [senha, setSenha] = useState('');
+
+  // Função para gerar senha aleatória
+  const gerarSenha = () => {
+    const caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
+    let senhaGerada = '';
+    for (let i = 0; i < 6; i++) {
+      senhaGerada += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    setSenha(senhaGerada);
+  };
+
+  // Função para copiar senha para a área de transferência
+  const copiarSenha = async () => {
+    try {
+      await navigator.clipboard.writeText(senha);
+      Swal.fire('Senha copiada para a área de transferência!');
+    } catch (err) {
+      Swal.fire('Erro ao copiar a senha.');
+    }
+  };
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -62,14 +85,28 @@ const AddFuncionarioModal: React.FC<AddFuncionarioModalProps> = ({ isOpen, onClo
                 <span></span>  :
                 <div className="mb-3">
                   <label htmlFor="senha" className="form-label">Senha:</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="senha"
-                    name="senha"
-                    defaultValue={''}
-                    required
-                  />           
+                  <div className=" input-group">
+                    <button
+                      type="button"
+                      className="btn btn-outline-light background-custom"
+                      onClick={gerarSenha}
+                    >
+                    Gerar senha
+                    </button>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="senha"
+                      name="senha"
+                      defaultValue={''}
+                      onChange={(e) => setSenha(e.target.value)}
+                      value={senha}
+                      required
+                    />
+                  <button type="button" onClick={copiarSenha} className="btn btn-outline-primary">
+                    Copiar senha
+                  </button>           
+                  </div>
                 </div>
               }
               <div className="mb-3">
