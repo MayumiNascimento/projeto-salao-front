@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-
 import api from '../../services/api';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -78,7 +77,7 @@ return (
                 icon: 'info',
                 confirmButtonText: 'Fechar',
                 customClass: {
-                  popup: 'text-start', 
+                popup: 'text-start', 
                 },
               });
             }}
@@ -91,4 +90,3 @@ return (
 }
 
 export default AgendaFuncionario;
-

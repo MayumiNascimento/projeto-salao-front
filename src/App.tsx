@@ -9,7 +9,7 @@ import Relatorio from './pages/Relatorio/relatorio';
 import Agenda from './pages/Agenda/Agenda';
 import Dashboard from './pages/Dashboard/Dashboard';
 import AgendaFuncionario from './pages/AgendaFuncionario/AgendaFuncionario';
-
+import Comissao from './pages/Comissao/Comissao';
 
   // Função auxiliar para pegar o tipo do usuário logado
     const getTipo = () => {
@@ -115,6 +115,16 @@ function App() {
             <FuncRoute>
               <Layout>
                 <AgendaFuncionario />
+              </Layout>
+            </FuncRoute>
+          }
+        />
+        <Route
+          path="/comissoes"
+          element={
+            <FuncRoute>
+              <Layout>
+                <Comissao />
               </Layout>
             </FuncRoute>
           }

@@ -282,7 +282,7 @@ const handleUpdateStatus = async () => {
           <div className="modal-footer">
             <button 
               type="button" 
-              className="btn btn-warning me-2"
+              className="btn background-custom text-white me-2"
               onClick={() => {
                 onUpdate(agendamento); 
               }}

@@ -56,37 +56,55 @@ function Login() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4" style={{ width: '300px' }}>
-        <h2 className="text-center mb-4">Login</h2>
-        {error && <div className="alert alert-danger">{error}</div>}
+    <div className="d-flex justify-content-center align-items-center vh-100 background-custom" style={{ minHeight: '100vh' }}>
+      <div
+        className="card shadow-lg p-4 border-0"
+        style={{
+          width: '350px',
+          borderRadius: '20px',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)', // branco com transparência para contraste suave
+          backdropFilter: 'blur(10px)', // efeito de blur para sofisticar
+          color: '#fff',
+        }}
+      >
+        <h2 className="text-center mb-4" style={{ fontWeight: '700' }}>Bem-vindo</h2>
+        {error && (
+          <div className="alert alert-danger" style={{ backgroundColor: 'rgba(255, 69, 58, 0.85)', color: '#fff' }}>
+            {error}
+          </div>
+        )}
         <form onSubmit={handleLogin}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Usuário</label>
+            <label htmlFor="username" className="form-label" style={{ color: '#ddd' }}>Usuário</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control rounded-pill"
               id="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff' }}
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="password" className="form-label">Senha</label>
+            <label htmlFor="password" className="form-label" style={{ color: '#ddd' }}>Senha</label>
             <input
               type="password"
-              className="form-control"
+              className="form-control rounded-pill"
               id="password"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
+              style={{ backgroundColor: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff' }}
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Entrar</button>
+          <button type="submit" className="btn btn-light w-100 rounded-pill fw-semibold" style={{ color: '#4a148c' }}>
+            Entrar
+          </button>
         </form>
       </div>
     </div>
+
   );
 };
 

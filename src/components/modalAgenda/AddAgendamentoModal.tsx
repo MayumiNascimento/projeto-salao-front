@@ -181,6 +181,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                     id="clienteTelefone"
                     value={clienteTelefone}
                     onChange={(e) => setClienteTelefone(e.target.value)}
+                    placeholder='Apenas numeros'
                     required
                   />
                 </div>
@@ -251,7 +252,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
                   />
                 </div>
                 <div className="mb-3 col-md-6">
-                  <label htmlFor="desconto">Desconto (opcional):</label>
+                  <label htmlFor="desconto">Desconto:</label>
                   <input
                     type="number"
                     className="form-control"
@@ -285,7 +286,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
               </div>
 
               <button type="submit" className="btn btn-primary">
-                Salvar Evento
+                Salvar 
               </button>
             </form>
           </div>

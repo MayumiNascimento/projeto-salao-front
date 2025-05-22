@@ -71,12 +71,21 @@ function Sidebar() {
           )}
 
           {tipo === 'funcionario' && (
-            <li className="nav-item">
-              <Link to="/agendaFuncionario" className="nav-link text-light px-2">
-                <i className="bi bi-calendar4-week fs-5"></i>
-                <span className="d-none d-md-inline ms-1">Minha agenda</span>
-              </Link>
-            </li>
+            <>
+              <li className="nav-item">
+                <Link to="/agendaFuncionario" className="nav-link text-light px-2">
+                  <i className="bi bi-calendar4-week fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Minha agenda</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/comissoes" className="nav-link text-light px-2">
+                  <i className="bi bi-calendar4-week fs-5"></i>
+                  <span className="d-none d-md-inline ms-1">Minhas comissões</span>
+                </Link>
+              </li>
+
+            </>
           )}
         </ul>
 
@@ -88,7 +97,7 @@ function Sidebar() {
             aria-expanded="false"
           >
             <i className="bi bi-person fs-5"></i>
-            <span className="d-none d-md-inline ms-2">{usuario?.nome || 'Usuário'}</span>
+            <span className="d-none d-md-inline ms-2" style={{fontSize: 20}}>{usuario?.nome || 'Usuário'}</span>
           </button>
           <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
             <li>
