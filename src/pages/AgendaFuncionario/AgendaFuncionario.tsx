@@ -31,7 +31,6 @@ function AgendaFuncionario() {
         },
       }));
       setAgendamento(formattedEvents);
-      console.log(data)
     } catch (error) {
       console.error('Erro ao buscar eventos:', error);
     }
@@ -65,7 +64,6 @@ return (
               const title = info.event.title;
 
               const listaServico = props.Servicos.map((servico: { nome: any; }) => servico.nome).join(', ')
-              console.log(props)
           
               Swal.fire({
                 title: `Agendamento: ${title}`,

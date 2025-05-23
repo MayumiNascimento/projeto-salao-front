@@ -41,8 +41,6 @@ function WhatsAppStatus() {
     return null; 
   }
 
-  console.log('status recebido ',status)
-
   return (
   <div className="d-flex flex-column align-items-center">
     {status === 'CONNECTED' || status === 'connected' ? (

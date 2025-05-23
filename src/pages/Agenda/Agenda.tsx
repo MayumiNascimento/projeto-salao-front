@@ -63,7 +63,6 @@ function Agenda() {
   const handleCreate  = async (eventData: any) => {
 
     try {
-      console.log('Dados enviados para criação:', eventData); 
       await api.post('api/agendamentos', eventData);
       Swal.fire('Sucesso!','Agendamento criado com sucesso!','success');
       fetchEvents(); // Atualiza o calendário

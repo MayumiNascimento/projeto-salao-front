@@ -40,11 +40,9 @@ function Login() {
 
       // Redireciona para a rota de acordo com o role
       if (funcionario.tipo === 'admin') {
-        console.log(data.funcionario)
         navigate('/home');
       } 
         else if (funcionario.tipo === 'funcionario') {
-          console.log(data.funcionario)
         navigate('/agendaFuncionario');
 
       } else {
