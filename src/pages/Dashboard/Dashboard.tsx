@@ -158,7 +158,7 @@ const Dashboard = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="agendamentos" fill="#0d6efd" name="Agendamentos" />
+                    <Bar dataKey="agendamentos" fill="#0d6efd" name="Atendimentos" />
                     <Bar dataKey="receita" fill="#ffc107" name="Receita (R$)" />
                   </BarChart>
                 </ResponsiveContainer>

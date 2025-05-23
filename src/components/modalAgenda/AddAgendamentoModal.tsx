@@ -29,7 +29,7 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
   const [valorComDesconto, setValorComDesconto] = useState(total - desconto);
 
   useEffect(() => {
-    setValorComDesconto(Math.max(total - desconto, 0)); // impede valores negativos
+    setValorComDesconto(Math.max(total - desconto, 0)); // 0 para impedir valores negativos
   }, [total, desconto]);
 
 
@@ -141,9 +141,8 @@ const AddAgendamentoModal: React.FC<AddAgendamentoModalProps> = ({ show, onClose
     const novoTotal = selectedServicos.reduce(
       (acc, servico) => acc + parseFloat(servico.preco.toString()), 0);
 
-      const descontoNum = parseFloat(desconto.toString()) || 0;
   
-      setTotal(novoTotal - descontoNum);
+      setTotal(novoTotal);
 
   }, [servicoId, servicos]);
 
