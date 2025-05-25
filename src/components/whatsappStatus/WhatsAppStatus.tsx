@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000'); // Atualize para a URL correta
+const socket = io(process.env.REACT_APP_SOCKET_URL);
 
 function WhatsAppStatus() {
   const [qrCode, setQrCode] = useState<string | null>(null);
