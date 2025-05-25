@@ -115,8 +115,8 @@ function Login() {
           {mostrarCredenciais && (
             <div className="mt-2 text-start text-light small border rounded p-2" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
               <p className="mb-1"><strong>Admin:</strong></p>
-              <p className="mb-1">Email: <code>yuri@gmail.com</code></p>
-              <p className="mb-3">Senha: <code>123</code></p>
+              <p className="mb-1">Email: <code>admin@gmail.com</code></p>
+              <p className="mb-3">Senha: <code>123456</code></p>
 
               <p className="mb-1"><strong>Funcionário:</strong></p>
               <p className="mb-1">Email: <code>charlote@gmail.com</code></p>
