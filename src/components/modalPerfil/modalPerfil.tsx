@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import api from '../../services/api';
 import Swal from 'sweetalert2';
 import Funcionario  from '../../types/Funcionario';
@@ -54,9 +55,11 @@ const [senhaAtual, setSenhaAtual] = useState<string>('');
 
   if (!isOpen) return null;
 
-  return (
-<div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-      <div className="modal-dialog modal-dialog-centered">
+  return ReactDOM.createPortal(
+
+  <div className="modal fade show" 
+      style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
+      <div className="modal-dialog modal-dialog-centered" style={{position: 'relative'}}>
         <div className="modal-content">
           <div className="modal-header background-custom text-white">
             <h5 className="modal-title">
@@ -124,7 +127,8 @@ const [senhaAtual, setSenhaAtual] = useState<string>('');
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
