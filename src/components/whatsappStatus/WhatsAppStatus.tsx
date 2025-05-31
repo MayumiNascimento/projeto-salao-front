@@ -3,6 +3,9 @@ import io from 'socket.io-client';
 
 const socket = io(process.env.REACT_APP_SOCKET_URL, {
   transports: ["websocket"],
+   reconnection: true,
+  reconnectionAttempts: 10,
+  timeout: 60000,
   withCredentials: true
 });
 
@@ -46,7 +49,7 @@ function WhatsAppStatus() {
 
   return (
   <div className="d-flex flex-column align-items-center">
-    {status === 'CONNECTED' || status === 'connected' ? (
+    {status.toLowerCase() === 'connected' ? (
       <div className="text-success">
         <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
           ✅ WhatsApp conectado com sucesso!
