@@ -18,7 +18,7 @@ function Login() {
 
       // Verifica se a resposta foi bem-sucedida
       if (response.status !== 200) {
-        throw new Error('Credenciais inválidas');
+        throw new Error('Credenciais inválidas, tente novamente');
       }
 
       // Extrai os dados da resposta
@@ -40,7 +40,7 @@ function Login() {
 
       // Redireciona para a rota de acordo com o role
       if (funcionario.tipo === 'admin') {
-        navigate('/home');
+        navigate('/agenda');
       } 
         else if (funcionario.tipo === 'funcionario') {
         navigate('/agendaFuncionario');
@@ -62,7 +62,7 @@ function Login() {
           width: '350px',
           borderRadius: '20px',
           backgroundColor: 'rgba(255, 255, 255, 0.15)', // branco com transparência para contraste suave
-          backdropFilter: 'blur(10px)', // efeito de blur para sofisticar
+          backdropFilter: 'blur(10px)', // efeito de blur 
           color: '#fff',
         }}
       >
@@ -117,10 +117,6 @@ function Login() {
               <p className="mb-1"><strong>Admin:</strong></p>
               <p className="mb-1">Email: <code>admin@gmail.com</code></p>
               <p className="mb-3">Senha: <code>123456</code></p>
-
-              <p className="mb-1"><strong>Funcionário:</strong></p>
-              <p className="mb-1">Email: <code>charlote@gmail.com</code></p>
-              <p>Senha: <code>123456</code></p>
             </div>
           )}
         </div>

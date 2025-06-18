@@ -1,4 +1,3 @@
-// components/Calendar.tsx
 import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -48,17 +47,17 @@ function Calendar({ onEventClick, onDateClick }: CalendarProps) {
       events={events}
       eventClick={onEventClick}
       dateClick={(info) => onDateClick(info.dateStr)}
+      themeSystem="bootstrap5"
       headerToolbar={{
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,list',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay',
       }}
       buttonText={{
         today: 'Hoje',
         month: 'Mês',
         week: 'Semana',
-        day: 'Dia',
-        list: 'Lista'
+        day: 'Dia'
       }}
     />
   );

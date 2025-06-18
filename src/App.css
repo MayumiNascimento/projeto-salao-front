@@ -19,3 +19,37 @@
       position: relative;
     }
   }
+
+  /* Centraliza o título do mês */
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+
+/* Botões com estilo personalizado */
+.fc .fc-button {
+  background-color: #6f42c1; /* Cor roxa Belesys */
+  border: none;
+  color: #fff;
+  border-radius: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.fc .fc-button:hover,
+.fc .fc-button:focus {
+  background-color: #5a35a0;
+  color: white;
+  box-shadow: none;
+}
+
+/* Ajuste do container do cabeçalho */
+.fc-header-toolbar {
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+

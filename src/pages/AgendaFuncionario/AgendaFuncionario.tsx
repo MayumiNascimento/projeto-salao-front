@@ -21,7 +21,7 @@ function AgendaFuncionario() {
       const formattedEvents = data.map((event: any) => ({
         id: event.id,
         title: event.cliente_nome,
-        start: `${event.dia}T${event.hora}`, // certifique-se de que "dia" e "hora" existem, senão use "data"
+        start: `${event.dia}T${event.hora}`,
         Servicos: event.Servicos,
         status: event.status,
         extendedProps: {
@@ -46,6 +46,7 @@ return (
             initialView="dayGridMonth"
             locale={'pt-br'}
             events={agendamento}
+            themeSystem="bootstrap5"
             headerToolbar={{
                 left: 'prev,next today',
                 center: 'title',
@@ -68,9 +69,10 @@ return (
               Swal.fire({
                 title: `Agendamento: ${title}`,
                 html: `
-                  <b>🔧 Serviço:</b> ${listaServico || 'N/D'}<br/>
-                  <b>📌 Status:</b> ${props.status || 'N/D'}<br/>
-                  <b>📝 Observações:</b> ${props.observacoes || 'Nenhuma'}<br/>
+                  <b> Hora:</b> ${props.hora || 'N/D'}<br/>
+                  <b> Serviço:</b> ${listaServico || 'N/D'}<br/>
+                  <b> Status:</b> ${props.status || 'N/D'}<br/>
+                  <b> Observações:</b> ${props.observacoes || 'Nenhuma'}<br/>
                 `,
                 icon: 'info',
                 confirmButtonText: 'Fechar',

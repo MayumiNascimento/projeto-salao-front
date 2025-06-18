@@ -38,12 +38,6 @@ function Sidebar() {
           {tipo === 'admin' && (
             <>
               <li className="nav-item">
-                <Link to="/home" className="nav-link text-light px-2">
-                  <i className="bi bi-house fs-5"></i>
-                  <span className="d-none d-md-inline ms-1">Dashboard</span>
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/relatorio" className="nav-link text-light px-2">
                   <i className="bi bi-file-earmark-bar-graph fs-5"></i>
                   <span className="d-none d-md-inline ms-1">Relatórios</span>
@@ -80,7 +74,7 @@ function Sidebar() {
               </li>
               <li className="nav-item">
                 <Link to="/comissoes" className="nav-link text-light px-2">
-                  <i className="bi bi-calendar4-week fs-5"></i>
+                  <i className="bi bi-cash-coin"></i>
                   <span className="d-none d-md-inline ms-1">Minhas comissões</span>
                 </Link>
               </li>

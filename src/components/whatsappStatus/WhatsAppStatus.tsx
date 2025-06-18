@@ -46,7 +46,7 @@ function WhatsAppStatus() {
   if (!visible) {
     return null; 
   }
-
+console.log(status)
   return (
   <div className="d-flex flex-column align-items-center">
     {status.toLowerCase() === 'connected' ? (
