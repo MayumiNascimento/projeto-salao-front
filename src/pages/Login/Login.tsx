@@ -56,6 +56,7 @@ function Login() {
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 background-custom" style={{ minHeight: '100vh' }}>
+      
       <div
         className="card shadow-lg p-4 border-0"
         style={{
@@ -66,7 +67,9 @@ function Login() {
           color: '#fff',
         }}
       >
-        <h2 className="text-center mb-4" style={{ fontWeight: '700' }}>Bem-vindo</h2>
+        <h1 className="text-center" style={{ color: '#410076' }}>Sistema BeleSys</h1>
+        <h3 className="text-center mb-4" >SEJA BEM-VINDO(A)</h3>
+        <p className='text-center'>Entre com suas credenciais de acesso</p>
         {error && (
           <div className="alert alert-danger" style={{ backgroundColor: 'rgba(255, 69, 58, 0.85)', color: '#fff' }}>
             {error}
@@ -102,7 +105,7 @@ function Login() {
           </button>
         </form>
 
-                <div className="text-center mt-3">
+        <div className="text-center mt-3">
           <button
             className="btn btn-sm text-light"
             style={{ fontSize: '0.9rem', textDecoration: 'underline' }}
