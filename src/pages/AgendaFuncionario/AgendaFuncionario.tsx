@@ -25,6 +25,7 @@ function AgendaFuncionario() {
         Servicos: event.Servicos,
         status: event.status,
         extendedProps: {
+          hora: event.hora,
           status: event.status,
           observacoes: event.observacoes,
           Servicos: event.Servicos
@@ -69,7 +70,7 @@ return (
               Swal.fire({
                 title: `Agendamento: ${title}`,
                 html: `
-                  <b> Hora:</b> ${props.hora || 'N/D'}<br/>
+                  <b> Hora:</b> ${props.hora}<br/>
                   <b> Serviço:</b> ${listaServico || 'N/D'}<br/>
                   <b> Status:</b> ${props.status || 'N/D'}<br/>
                   <b> Observações:</b> ${props.observacoes || 'Nenhuma'}<br/>
