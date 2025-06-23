@@ -54,7 +54,7 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Redirecionamento padrão */}
-        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
 
         {/* ROTAS PARA ADMINISTRADOR */}
         <Route
