@@ -250,19 +250,25 @@ function Relatorio() {
                   <table className="table table-striped">
                     <thead>
                       <tr>
-                        <th>Cliente</th>
-                        <th>Funcionário</th>
                         <th>Data</th>
+                        <th>Cliente</th>
                         <th>Hora</th>
+                        <th>Serviço</th>
                       </tr>
                     </thead>
                     <tbody>
                       {relatorio.agendamentosCancelados.map((agendamento) => (
                         <tr key={agendamento.id}>
+                          <td>{new Date(agendamento.dia).toLocaleDateString()}</td>
                           <td>{agendamento.cliente_nome}</td>
-                          <td>{agendamento.funcionario_id}</td>
-                          <td>{agendamento.dia}</td>
                           <td>{agendamento.hora}</td>
+                          <ul className="list-unstyled mb-0">
+                              {agendamento.Servicos?.map((servico, idx) => (
+                                <li key={idx}>
+                                  {servico.nome} - R${(servico.preco)}
+                                </li>
+                              ))}
+                          </ul>
                         </tr>
                       ))}
                     </tbody>
