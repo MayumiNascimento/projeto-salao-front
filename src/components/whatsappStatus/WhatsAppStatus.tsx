@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import ReactDOM from 'react-dom';
 
 const socket = io(process.env.REACT_APP_SOCKET_URL, {
   transports: ["websocket"],
-   reconnection: true,
+  reconnection: true,
   reconnectionAttempts: 10,
   timeout: 60000,
   withCredentials: true
 });
 
-function WhatsAppStatus() {
+type WhatsAppStatusProps = {
+  show: boolean;
+  onClose: () => void;
+};
+
+function WhatsAppStatus({show, onClose}: WhatsAppStatusProps) {
+
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [status, setStatus] = useState('');
   const [visible, setVisible] = useState(true);
@@ -47,23 +54,36 @@ function WhatsAppStatus() {
     return null; 
   }
 console.log(status)
-  return (
-  <div className="d-flex flex-column align-items-center">
-    {status.toLowerCase() === 'connected' ? (
-      <div className="text-success">
-        <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-          ✅ WhatsApp conectado com sucesso!
-        </p>
+  return ReactDOM.createPortal(
+   <div className={`modal fade ${show ? 'show d-block' : ''}`} tabIndex={-1} role="dialog">
+      <div className="modal-dialog modal-dialog-centered" role="document">
+        <div className="modal-content p-3">
+          <div className="modal-header">
+            <h5 className="modal-title">Status do WhatsApp</h5>
+            <button type="button" className="btn-close" onClick={onClose}></button>
+          </div>
+          <div className="modal-body d-flex flex-column align-items-center">
+            {status.toLowerCase() === 'connected' ? (
+              <div className="text-success text-center">
+                <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+                  ✅ WhatsApp conectado com sucesso!
+                </p>
+              </div>
+            ) : qrCode ? (
+              <img
+                src={qrCode}
+                alt="QR Code do WhatsApp"
+                style={{ width: '200px', height: 'auto', borderRadius: '6px' }}
+              />
+            ) : (
+              <p>Aguardando conexão...</p>
+            )}
+          </div>
+        </div>
       </div>
-    ) : 
-      qrCode ? (
-        <img
-          src={qrCode}
-          alt="QR Code do WhatsApp"
-          style={{ width: '200px', height: 'auto', borderRadius: '6px' }}
-        />
-      ) : null }
-  </div>
+
+    </div>,
+    document.body
   );
 }
 

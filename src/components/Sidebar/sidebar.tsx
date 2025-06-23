@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import PerfilModal from '../modalPerfil/modalPerfil';
 import Funcionario from '../../types/Funcionario';
+import WhatsAppStatus from '../whatsappStatus/WhatsAppStatus';
 
 function Sidebar() {
+
   const tipo = localStorage.getItem('tipo'); // 'admin' ou 'funcionario'
   const [usuario, setUsuario] = useState<Funcionario | null>(null);
   const [isPerfilModalOpen, setIsPerfilModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const funcionarioSalvo = localStorage.getItem('funcionario');
@@ -94,6 +98,11 @@ function Sidebar() {
             <span className="d-none d-md-inline ms-2" style={{fontSize: 20}}>{usuario?.nome || 'Usuário'}</span>
           </button>
           <ul className="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            {tipo === 'admin' && (
+              <li>
+                <button className="btn btn-primary" onClick={() => setShowModal(true)}>Conectar ao WhatsApp</button>
+              </li>
+            )}
             <li>
               <button className="dropdown-item" onClick={handleOpenPerfilModal}>Meu perfil</button>
             </li>
@@ -113,6 +122,8 @@ function Sidebar() {
           usuario={usuario}
         />
       )}
+
+      <WhatsAppStatus show={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

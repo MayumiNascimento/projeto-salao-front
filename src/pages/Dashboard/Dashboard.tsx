@@ -165,13 +165,13 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Card de Conexão com WhatsApp */}
+            {/* Card de Conexão com WhatsApp
             <div className="card shadow-sm">
               <div className="card-body text-center">
                 <h5 className="card-title mb-3">Conexão com o WhatsApp</h5>
                 <WhatsAppStatus />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
