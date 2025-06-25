@@ -20,6 +20,12 @@ function Comissao() {
     }
   };
 
+    const formatarData = (data: string) => {
+    return new Date(data).toLocaleDateString('pt-BR', {
+    timeZone: 'UTC'
+    });
+  };
+
   return (
     <div className="container mt-4">
       <h2>💰 Minhas Comissões</h2>
@@ -43,7 +49,7 @@ function Comissao() {
         <tbody>
           {comissoes.map((c) => (
             <tr key={c.id}>
-              <td>{new Date(c.dia).toLocaleDateString()}</td>
+              <td>{formatarData(c.dia)}</td>
               <td>R$ {c.comissao.toFixed(2)}</td>
             </tr>
           ))}
